@@ -103,8 +103,8 @@ export default function KontaktPage() {
               <CardTitle>Email podrška</CardTitle>
             </CardHeader>
             <CardContent>
-              <a href="mailto:podrska@learnfix.ba" className="text-primary">
-                podrska@learnfix.ba
+              <a href="mailto:learnfixcontact@gmail.com" className="text-primary">
+                learnfixcontact@gmail.com
               </a>
             </CardContent>
           </Card>
