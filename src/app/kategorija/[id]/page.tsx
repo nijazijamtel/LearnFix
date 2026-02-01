@@ -1,10 +1,20 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getCategoryById, getProblemsByCategoryId } from '@/data';
+import { getCategoryById, getProblemsByCategoryId, categories } from '@/data';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChevronRight, AlertCircle, CheckCircle, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+/* ===========================
+   ✅ REQUIRED FOR STATIC EXPORT
+   =========================== */
+export async function generateStaticParams() {
+  return categories.map((category: { id: string }) => ({
+    id: category.id,
+  }));
+}
+/* =========================== */
 
 interface CategoryPageProps {
   params: {
@@ -31,7 +41,6 @@ const difficultyConfig = {
 };
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  // ✅ Make the page async and await data
   const category = await getCategoryById(params.id);
 
   if (!category) {
@@ -42,7 +51,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <section className="bg-gradient-to-br from-primary/10 to-accent py-12 px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
@@ -61,7 +69,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         </div>
       </section>
 
-      {/* Problems List */}
       <section className="container mx-auto px-4 py-12 md:py-16 max-w-4xl">
         <h2 className="text-2xl md:text-3xl font-semibold mb-6">
           Česti problemi i rješenja
@@ -120,16 +127,11 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         )}
       </section>
 
-      {/* Back to Home */}
       <section className="container mx-auto px-4 pb-12 md:pb-16 max-w-4xl">
-        <Link
-          href="/"
-          className="inline-flex items-center text-primary hover:underline"
-        >
+        <Link href="/" className="inline-flex items-center text-primary hover:underline">
           ← Nazad na početnu
         </Link>
       </section>
     </div>
   );
 }
-

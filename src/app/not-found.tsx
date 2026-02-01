@@ -8,8 +8,6 @@ import Link from 'next/link';
 import { Home, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export const dynamic = 'force-dynamic';
-
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
@@ -18,7 +16,9 @@ export default function NotFound() {
         <h1 className="text-9xl font-bold tracking-tighter text-primary">404</h1>
 
         {/* Title */}
-        <h2 className="mt-4 text-3xl font-bold tracking-tight">Page not found</h2>
+        <h2 className="mt-4 text-3xl font-bold tracking-tight">
+          Page not found
+        </h2>
 
         {/* Description */}
         <p className="mt-4 text-lg text-muted-foreground">
@@ -35,7 +35,7 @@ export default function NotFound() {
           </Button>
 
           <Button asChild variant="outline" size="lg">
-            <Link href="javascript:history.back()">
+            <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Go back
             </Link>
@@ -44,7 +44,7 @@ export default function NotFound() {
 
         {/* Help text */}
         <p className="mt-8 text-sm text-muted-foreground">
-          If you think this is a mistake, please contact support
+          If you think this is a mistake, please contact support.
         </p>
       </div>
     </div>

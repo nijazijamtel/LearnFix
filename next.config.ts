@@ -1,39 +1,48 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable source maps for Designer Mode correlation
+  // REQUIRED for APK / offline WebView
+  output: "export",
+
+  // Prevent runtime server features
+  trailingSlash: true,
+
+  // Keep your existing settings
   productionBrowserSourceMaps: true,
 
-  // Absolutely lenient configuration - never fail builds
   typescript: {
     ignoreBuildErrors: true,
   },
+
   eslint: {
     ignoreDuringBuilds: true,
   },
 
-  // Moved from experimental in Next.js 15+
   outputFileTracingRoot: process.cwd(),
-devIndicators: false,
-  // Simple image configuration
+
+  devIndicators: false,
+
   images: {
     unoptimized: true,
   },
 
-  // Basic performance settings
   poweredByHeader: false,
 
-  // Flexible iframe embedding
   async headers() {
     return [
       {
         source: "/:path*",
         headers: [
-          { key: "Content-Security-Policy", value: "frame-ancestors *" },
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors *",
+          },
         ],
       },
     ];
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
+
+

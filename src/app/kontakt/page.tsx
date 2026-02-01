@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import emailjs from '@emailjs/browser';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,38 +18,36 @@ import { Label } from '@/components/ui/label';
 import { Mail, MessageSquare, HelpCircle, CheckCircle } from 'lucide-react';
 
 export default function KontaktPage() {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const form = e.currentTarget; // ✅ store reference immediately
 
-    try {
-      const res = await fetch('/api/kontakt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+  try {
+    await emailjs.sendForm(
+      process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+      process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+      form,
+      process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+    );
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Greška pri slanju poruke');
+    toast.success('Poruka uspješno poslana!');
+    form.reset(); // ✅ SAFE
+    setIsSubmitted(true);
+    setTimeout(() => setIsSubmitted(false), 5000);
+  } catch (err) {
+    console.error(err);
+    toast.error('Greška pri slanju poruke');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
-      toast.success('Poruka uspješno poslana!');
-      setFormData({ name: '', email: '', message: '' });
-      setIsSubmitted(true);
-      setTimeout(() => setIsSubmitted(false), 5000);
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background py-12">
@@ -76,34 +75,17 @@ export default function KontaktPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label>Ime</Label>
-                  <Input
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
+                  <Input name="name" required />
                 </div>
 
                 <div>
                   <Label>Email</Label>
-                  <Input
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
+                  <Input name="email" type="email" required />
                 </div>
 
                 <div>
                   <Label>Poruka</Label>
-                  <Textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    rows={5}
-                    required
-                  />
+                  <Textarea name="message" rows={5} required />
                 </div>
 
                 <Button className="w-full" disabled={isSubmitting}>
